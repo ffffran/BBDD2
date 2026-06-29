@@ -1,3 +1,6 @@
+USE BBDD2_UTN;
+GO
+
 CREATE TRIGGER trg_actualizar_stock_al_vender
 ON Detalle_Ventas
 AFTER INSERT
@@ -16,6 +19,7 @@ BEGIN
     INNER JOIN Ingredientes_Producto ip ON ip.id_ingrediente = ing.id_ingrediente
     INNER JOIN inserted i ON ip.id_producto = i.id_producto;
 END;
+GO
 
 CREATE TRIGGER trg_evitar_venta_sin_stock
 ON Detalle_Ventas
@@ -29,7 +33,7 @@ BEGIN
         WHERE p.stock_actual < i.cantidad
     )
     BEGIN
-        THROW 50001, 'Stock insuficiente para uno o más productos.', 1;
+        RAISERROR ('Stock insuficiente para uno o más productos.', 50001,1);
     END
 
     INSERT INTO Detalle_Ventas (id_venta, id_producto, cantidad,
@@ -38,6 +42,7 @@ BEGIN
            precio_unitario, subtotal
     FROM inserted;
 END;
+GO
 
 CREATE TRIGGER trg_auditar_cambio_precio_compra
 ON Detalle_Compras
@@ -60,3 +65,4 @@ BEGIN
         WHERE i.costo_unitario <> d.costo_unitario;
     END
 END;
+GO

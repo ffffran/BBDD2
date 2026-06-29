@@ -1,3 +1,6 @@
+USE BBDD2_UTN;
+GO
+
 CREATE VIEW vista_ventas_diarias AS
 SELECT
     v.fecha,
@@ -12,6 +15,8 @@ INNER JOIN Detalle_Ventas dv ON dv.id_venta = v.id_venta
 INNER JOIN Productos p ON p.id_producto = dv.id_producto
 INNER JOIN Categorias_Productos cp ON cp.id_categoria = p.id_categoria
 GROUP BY v.fecha, mp.nombre_metodo, cp.nombre_categoria;
+GO
+
 
 CREATE VIEW vista_stock_critico AS
 SELECT
@@ -29,6 +34,7 @@ SELECT
     NULL AS stock_minimo
 FROM Ingredientes
 WHERE stock_disponible <= 0;
+GO
 
 CREATE VIEW vista_rentabilidad_productos AS
 SELECT

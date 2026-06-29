@@ -1,3 +1,6 @@
+USE BBDD2_UTN;
+GO
+
 CREATE PROCEDURE sp_registrar_venta
     @id_cliente INT,
     @id_empleado INT,
@@ -30,6 +33,7 @@ BEGIN
         PRINT 'Error al registrar venta: ' + ERROR_MESSAGE();
     END CATCH
 END;
+GO
 
 CREATE PROCEDURE sp_agregar_detalle_venta
     @id_venta INT,
@@ -60,6 +64,7 @@ BEGIN
         PRINT 'Error: ' + ERROR_MESSAGE();
     END CATCH
 END;
+GO
 
 CREATE PROCEDURE sp_finalizar_venta
     @id_venta INT
@@ -93,6 +98,7 @@ BEGIN
         PRINT 'Error: ' + ERROR_MESSAGE();
     END CATCH
 END;
+GO
 
 CREATE PROCEDURE sp_registrar_compra
     @id_proveedor INT,
@@ -119,6 +125,7 @@ BEGIN
     END CATCH
 END;
 
+GO
 CREATE PROCEDURE sp_agregar_detalle_compra
     @id_compra INT,
     @id_producto INT,
@@ -158,6 +165,7 @@ BEGIN
     END CATCH
 END;
 
+GO
 CREATE PROCEDURE sp_finalizar_compra
     @id_compra INT
 AS
