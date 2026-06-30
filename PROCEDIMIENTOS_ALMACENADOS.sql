@@ -205,3 +205,59 @@ BEGIN
         PRINT 'Error: ' + ERROR_MESSAGE();
     END CATCH
 END;
+GO
+
+CREATE PROCEDURE sp_cocinar_producto
+    @id_producto INT,
+    @cantidad INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        IF @cantidad <= 0
+        BEGIN
+            THROW 50001, 'La cantidad a cocinar debe ser mayor a cero.', 1;
+        END;
+
+        IF EXISTS
+        (
+            SELECT 1
+            FROM Ingredientes_Producto ip
+            INNER JOIN Ingredientes i
+                ON i.id_ingrediente = ip.id_ingrediente
+            WHERE ip.id_producto = @id_producto
+              AND i.stock_disponible < (ip.cantidad_utilizada * @cantidad)
+        )
+        BEGIN
+            PRINT 'No es posible cocinar el producto.';
+            PRINT 'Es necesario reponer uno o más ingredientes.';
+
+            ROLLBACK TRANSACTION;
+            RETURN;
+        END;
+
+        UPDATE i
+        SET stock_disponible =
+            stock_disponible - (ip.cantidad_utilizada * @cantidad)
+        FROM Ingredientes i
+        INNER JOIN Ingredientes_Producto ip
+            ON ip.id_ingrediente = i.id_ingrediente
+        WHERE ip.id_producto = @id_producto;
+
+        UPDATE Productos
+        SET stock_actual = stock_actual + @cantidad
+        WHERE id_producto = @id_producto;
+
+        COMMIT TRANSACTION;
+
+        PRINT 'Producto elaborado correctamente.';
+    END TRY
+
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+        PRINT ERROR_MESSAGE();
+    END CATCH
+END;
