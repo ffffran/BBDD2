@@ -16,6 +16,7 @@ BEGIN
     INNER JOIN Ingredientes_Producto ip ON ip.id_ingrediente = ing.id_ingrediente
     INNER JOIN inserted i ON ip.id_producto = i.id_producto;
 END;
+GO
 
 CREATE TRIGGER trg_evitar_venta_sin_stock
 ON Detalle_Ventas
@@ -26,10 +27,10 @@ BEGIN
         SELECT 1
         FROM inserted i
         INNER JOIN Productos p ON p.id_producto = i.id_producto
-        WHERE p.stock_actual < i.cantidad
+        WHERE i.cantidad <= 0 OR p.stock_actual < i.cantidad
     )
     BEGIN
-        THROW 50001, 'Stock insuficiente para uno o más productos.', 1;
+        THROW 50001, 'Stock insuficiente para uno o más productos O Cantidad Incorrecta.', 1;
     END
 
     INSERT INTO Detalle_Ventas (id_venta, id_producto, cantidad,
@@ -38,6 +39,7 @@ BEGIN
            precio_unitario, subtotal
     FROM inserted;
 END;
+GO
 
 CREATE TRIGGER trg_auditar_cambio_precio_compra
 ON Detalle_Compras

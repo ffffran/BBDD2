@@ -30,6 +30,7 @@ BEGIN
         PRINT 'Error al registrar venta: ' + ERROR_MESSAGE();
     END CATCH
 END;
+GO
 
 CREATE PROCEDURE sp_agregar_detalle_venta
     @id_venta INT,
@@ -60,6 +61,7 @@ BEGIN
         PRINT 'Error: ' + ERROR_MESSAGE();
     END CATCH
 END;
+GO
 
 CREATE PROCEDURE sp_finalizar_venta
     @id_venta INT
@@ -74,6 +76,17 @@ BEGIN
 
         IF @subtotal IS NULL
             SET @subtotal = 0;
+
+        IF @subtotal = 0
+        BEGIN
+            DELETE FROM Metodo_Pago_Venta
+            WHERE id_venta = @id_venta;
+        
+            DELETE FROM Ventas
+            WHERE id_venta = @id_venta;
+        
+            THROW 50001, 'La venta no contiene productos. Se canceló la operación.', 1;
+        END;
 
         UPDATE Ventas
         SET
@@ -93,6 +106,7 @@ BEGIN
         PRINT 'Error: ' + ERROR_MESSAGE();
     END CATCH
 END;
+GO
 
 CREATE PROCEDURE sp_registrar_compra
     @id_proveedor INT,
@@ -118,6 +132,7 @@ BEGIN
         PRINT 'Error al registrar compra: ' + ERROR_MESSAGE();
     END CATCH
 END;
+GO
 
 CREATE PROCEDURE sp_agregar_detalle_compra
     @id_compra INT,
@@ -157,6 +172,7 @@ BEGIN
         PRINT 'Error: ' + ERROR_MESSAGE();
     END CATCH
 END;
+GO
 
 CREATE PROCEDURE sp_finalizar_compra
     @id_compra INT

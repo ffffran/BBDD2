@@ -1,4 +1,8 @@
 CREATE DATABASE BBDD2_UTN;
+GO
+
+USE BBDD_UTN;
+GO
 
 CREATE TABLE Categorias_Productos
 (
@@ -117,7 +121,7 @@ CREATE TABLE Ingredientes
 (
 	id_ingrediente INT PRIMARY KEY IDENTITY (1,1),
 	nombre VARCHAR(60) NOT NULL,
-	stock_disponible INT NOT NULL,
+	stock_disponible DECIMAL(6,3) NOT NULL,
 	costo_unitario DECIMAL(7,2) NOT NULL,
 	id_unidad_medida INT NOT NULL,
 	
@@ -211,7 +215,7 @@ CREATE TABLE Detalle_Compras
 
 CREATE TABLE Ingredientes_Producto
 (
-	cantidad_utilizada INT NOT NULL,
+	cantidad_utilizada DECIMAL(5,3) NOT NULL,
 	id_producto INT NOT NULL,
 	id_ingrediente INT NOT NULL,
 	
