@@ -1,3 +1,6 @@
+USE BBDD2_UTN;
+GO
+
 CREATE TRIGGER trg_actualizar_stock_al_vender
 ON Detalle_Ventas
 AFTER INSERT
@@ -62,3 +65,4 @@ BEGIN
         WHERE i.costo_unitario <> d.costo_unitario;
     END
 END;
+GO

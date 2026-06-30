@@ -1,3 +1,6 @@
+USE BBDD2_UTN;
+GO
+
 CREATE PROCEDURE sp_registrar_venta
     @id_cliente INT,
     @id_empleado INT,
@@ -134,6 +137,7 @@ BEGIN
 END;
 GO
 
+GO
 CREATE PROCEDURE sp_agregar_detalle_compra
     @id_compra INT,
     @id_producto INT,
@@ -174,6 +178,7 @@ BEGIN
 END;
 GO
 
+GO
 CREATE PROCEDURE sp_finalizar_compra
     @id_compra INT
 AS
