@@ -33,7 +33,7 @@ BEGIN
         WHERE p.stock_actual < i.cantidad
     )
     BEGIN
-        RAISERROR ('Stock insuficiente para uno o más productos.', 50001,1);
+        THROW 50001, 'Stock insuficiente para uno o más productos.', 1;
     END
 
     INSERT INTO Detalle_Ventas (id_venta, id_producto, cantidad,

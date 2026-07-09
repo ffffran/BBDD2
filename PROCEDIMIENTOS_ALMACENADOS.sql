@@ -192,3 +192,87 @@ BEGIN
         PRINT 'Error: ' + ERROR_MESSAGE();
     END CATCH
 END;
+GO
+
+CREATE PROCEDURE sp_agregar_ingrediente
+    @nombre VARCHAR(60),
+    @stock_disponible DECIMAL(6,3),
+    @costo_unitario DECIMAL(7,2),
+    @id_unidad_medida INT
+AS
+BEGIN
+   
+    IF @stock_disponible <= 0
+    BEGIN
+        RAISERROR('El stock disponible debe ser mayor a 0.', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Unidades_Medida WHERE id_unidad_medida = @id_unidad_medida)
+    BEGIN
+        RAISERROR('El id de unidad de medida no existe.', 16, 1);
+        RETURN;
+    END
+
+    INSERT INTO Ingredientes (nombre, stock_disponible, costo_unitario, id_unidad_medida)
+    VALUES (@nombre, @stock_disponible, @costo_unitario, @id_unidad_medida);
+END;
+
+GO
+
+
+CREATE PROCEDURE sp_cocinar_producto
+    @id_producto INT,
+    @cantidad INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        IF @cantidad <= 0
+        BEGIN
+            THROW 50001, 'La cantidad a cocinar debe ser mayor a cero.', 1;
+        END;
+
+        IF EXISTS
+        (
+            SELECT 1
+            FROM Ingredientes_Producto ip
+            INNER JOIN Ingredientes i
+                ON i.id_ingrediente = ip.id_ingrediente
+            WHERE ip.id_producto = @id_producto
+              AND i.stock_disponible < (ip.cantidad_utilizada * @cantidad)
+        )
+        BEGIN
+            PRINT 'No es posible cocinar el producto.';
+            PRINT 'Es necesario reponer uno o más ingredientes.';
+
+            ROLLBACK TRANSACTION;
+            RETURN;
+        END;
+
+        UPDATE i
+        SET stock_disponible =
+            stock_disponible - (ip.cantidad_utilizada * @cantidad)
+        FROM Ingredientes i
+        INNER JOIN Ingredientes_Producto ip
+            ON ip.id_ingrediente = i.id_ingrediente
+        WHERE ip.id_producto = @id_producto;
+
+        UPDATE Productos
+        SET stock_actual = stock_actual + @cantidad
+        WHERE id_producto = @id_producto;
+
+        COMMIT TRANSACTION;
+
+        PRINT 'Producto elaborado correctamente.';
+    END TRY
+
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+        PRINT ERROR_MESSAGE();
+    END CATCH
+END;
+
