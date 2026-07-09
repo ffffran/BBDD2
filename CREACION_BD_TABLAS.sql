@@ -257,3 +257,22 @@ CREATE TABLE Auditoria_Precios_Compra (
     fecha_cambio DATETIME NOT NULL
 );
 GO
+
+CREATE TABLE Auditoria_Stock_Ingredientes (
+    id_auditoria INT PRIMARY KEY IDENTITY(1,1),
+    id_ingrediente INT NOT NULL,
+    stock_anterior DECIMAL(6,3) NOT NULL,
+    stock_nuevo DECIMAL(6,3) NOT NULL,
+    fecha_cambio DATETIME NOT NULL,
+    usuario VARCHAR(60) NULL
+);
+GO
+
+CREATE TABLE Auditoria_Stock_Productos (
+    id_auditoria INT PRIMARY KEY IDENTITY(1,1),
+    id_producto INT NOT NULL,
+    stock_anterior INT NOT NULL,
+    stock_nuevo INT NOT NULL,
+    fecha_cambio DATETIME NOT NULL,
+    usuario VARCHAR(60) NULL
+);
