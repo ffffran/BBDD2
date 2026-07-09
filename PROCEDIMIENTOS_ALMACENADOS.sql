@@ -239,7 +239,7 @@ CREATE PROCEDURE sp_cocinar_producto
     @cantidad INT
 AS
 BEGIN
-    SET NOCOUNT ON;
+  
 
     BEGIN TRY
         BEGIN TRANSACTION;
@@ -288,3 +288,82 @@ BEGIN
         PRINT ERROR_MESSAGE();
     END CATCH
 END;
+GO
+
+CREATE PROCEDURE sp_actualizar_stock_producto
+    @id_producto INT,
+    @cantidad INT,
+    @usuario VARCHAR(60) = NULL
+AS
+BEGIN
+    
+    BEGIN TRY
+
+        BEGIN TRANSACTION;
+        DECLARE @stock_anterior INT;
+        
+        SELECT @stock_anterior = stock_actual FROM Productos WHERE id_producto = @id_producto;
+
+        IF @stock_anterior IS NULL
+        BEGIN
+            THROW 50001, 'Producto no encontrado.', 1;
+        END
+
+
+        UPDATE Productos SET stock_actual = stock_actual + @cantidad WHERE id_producto = @id_producto;
+        INSERT INTO Auditoria_Stock_Productos (id_producto, stock_anterior, stock_nuevo, fecha_cambio, usuario)
+        VALUES (@id_producto, @stock_anterior, @stock_anterior + @cantidad, GETDATE(), @usuario);
+
+        COMMIT TRANSACTION;
+        PRINT 'Stock actualizado correctamente.';
+
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+        PRINT ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_consultar_ventas_empleado
+    @id_empleado INT,
+    @fecha_inicio DATE,
+    @fecha_fin DATE
+AS
+BEGIN
+   
+    SELECT
+        v.id_venta,
+        v.fecha,
+        v.total,
+        c.nombre + ' ' + c.apellido AS cliente,
+        m.numero_mesa
+    FROM Ventas v
+    INNER JOIN Clientes c ON c.id_cliente = v.id_cliente
+    INNER JOIN Mesas m ON m.id_mesa = v.id_mesa
+    WHERE v.id_empleado = @id_empleado
+      AND v.fecha BETWEEN @fecha_inicio AND @fecha_fin
+    ORDER BY v.fecha DESC;
+END;
+GO
+
+CREATE PROCEDURE sp_productos_mas_vendidos
+    @fecha_inicio DATE = NULL,
+    @fecha_fin DATE = NULL
+AS
+BEGIN
+  
+    IF @fecha_inicio IS NULL SET @fecha_inicio = '1900-01-01';
+    IF @fecha_fin IS NULL SET @fecha_fin = GETDATE();
+    SELECT TOP 10
+        p.nombre_producto,
+        SUM(dv.cantidad) AS total_vendido,
+        SUM(dv.subtotal) AS total_recaudado
+    FROM Detalle_Ventas dv
+    INNER JOIN Productos p ON p.id_producto = dv.id_producto
+    INNER JOIN Ventas v ON v.id_venta = dv.id_venta
+    WHERE v.fecha BETWEEN @fecha_inicio AND @fecha_fin
+    GROUP BY p.nombre_producto
+    ORDER BY total_vendido DESC;
+END;
+GO
