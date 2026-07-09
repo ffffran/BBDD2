@@ -80,6 +80,17 @@ BEGIN
         IF @subtotal IS NULL
             SET @subtotal = 0;
 
+        IF @subtotal = 0
+        BEGIN
+            DELETE FROM Metodo_Pago_Venta
+            WHERE id_venta = @id_venta;
+        
+            DELETE FROM Ventas
+            WHERE id_venta = @id_venta;
+        
+            THROW 50001, 'La venta no contiene productos. Se canceló la operación.', 1;
+        END;
+
         UPDATE Ventas
         SET
             subtotal = @subtotal,
@@ -124,6 +135,7 @@ BEGIN
         PRINT 'Error al registrar compra: ' + ERROR_MESSAGE();
     END CATCH
 END;
+GO
 
 GO
 CREATE PROCEDURE sp_agregar_detalle_compra
@@ -164,6 +176,7 @@ BEGIN
         PRINT 'Error: ' + ERROR_MESSAGE();
     END CATCH
 END;
+GO
 
 GO
 CREATE PROCEDURE sp_finalizar_compra
@@ -275,4 +288,3 @@ BEGIN
         PRINT ERROR_MESSAGE();
     END CATCH
 END;
-

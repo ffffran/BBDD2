@@ -1,6 +1,7 @@
 CREATE DATABASE BBDD2_UTN;
 GO
-USE BBDD2_UTN;
+
+USE BBDD_UTN;
 GO
 
 CREATE TABLE Categorias_Productos
@@ -118,15 +119,15 @@ CREATE TABLE Productos
 
 CREATE TABLE Ingredientes
 (
-    id_ingrediente INT PRIMARY KEY IDENTITY (1,1),
-    nombre VARCHAR(60) NOT NULL,
-    stock_disponible INT NOT NULL,
-    costo_unitario DECIMAL(7,2) NOT NULL,
-    id_unidad_medida INT NOT NULL,
-    
-    CONSTRAINT FK_Ingredientes_Unidades_Medida
-        FOREIGN KEY (id_unidad_medida)
-        REFERENCES Unidades_Medida(id_unidad_medida)
+	id_ingrediente INT PRIMARY KEY IDENTITY (1,1),
+	nombre VARCHAR(60) NOT NULL,
+	stock_disponible DECIMAL(6,3) NOT NULL,
+	costo_unitario DECIMAL(7,2) NOT NULL,
+	id_unidad_medida INT NOT NULL,
+	
+		CONSTRAINT FK_Ingredientes_Unidades_Medida
+			FOREIGN KEY (id_unidad_medida)
+			REFERENCES Unidades_Medida(id_unidad_medida)
 );
 
 CREATE TABLE Ventas
@@ -214,20 +215,20 @@ CREATE TABLE Detalle_Compras
 
 CREATE TABLE Ingredientes_Producto
 (
-    cantidad_utilizada INT NOT NULL,
-    id_producto INT NOT NULL,
-    id_ingrediente INT NOT NULL,
-    
-    CONSTRAINT PK_Ingredientes_Producto
-        PRIMARY KEY (id_producto, id_ingrediente),
-        
-    CONSTRAINT FK_Ingredientes_Producto_AUXPro
-        FOREIGN KEY (id_producto)
-        REFERENCES Productos(id_producto),
-        
-    CONSTRAINT FK_Ingredientes_Producto_AUXIng
-        FOREIGN KEY (id_ingrediente)
-        REFERENCES Ingredientes(id_ingrediente)   -- Sin coma
+	cantidad_utilizada DECIMAL(5,3) NOT NULL,
+	id_producto INT NOT NULL,
+	id_ingrediente INT NOT NULL,
+	
+	CONSTRAINT PK_Ingredientes_Producto
+		PRIMARY KEY (id_producto, id_ingrediente),
+		
+	CONSTRAINT FK_Ingredientes_Producto_AUXPro
+		FOREIGN KEY (id_producto)
+		REFERENCES Productos(id_producto),
+		
+	CONSTRAINT FK_Ingredientes_Producto_AUXIng
+		FOREIGN KEY (id_ingrediente)
+		REFERENCES Ingredientes(id_ingrediente),
 );
 
 CREATE TABLE Metodo_Pago_Venta

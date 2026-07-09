@@ -30,10 +30,10 @@ BEGIN
         SELECT 1
         FROM inserted i
         INNER JOIN Productos p ON p.id_producto = i.id_producto
-        WHERE p.stock_actual < i.cantidad
+        WHERE i.cantidad <= 0 OR p.stock_actual < i.cantidad
     )
     BEGIN
-        THROW 50001, 'Stock insuficiente para uno o más productos.', 1;
+        THROW 50001, 'Stock insuficiente para uno o más productos O Cantidad Incorrecta.', 1;
     END
 
     INSERT INTO Detalle_Ventas (id_venta, id_producto, cantidad,
