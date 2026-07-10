@@ -17,7 +17,6 @@ INNER JOIN Categorias_Productos cp ON cp.id_categoria = p.id_categoria
 GROUP BY v.fecha, mp.nombre_metodo, cp.nombre_categoria;
 GO
 
-
 CREATE VIEW vista_stock_critico AS
 SELECT
     'Producto' AS tipo,
@@ -46,6 +45,7 @@ SELECT
 FROM Productos p
 INNER JOIN Categorias_Productos cp ON cp.id_categoria = p.id_categoria
 WHERE p.estado = 1;
+GO
 
 CREATE VIEW vista_ventas_por_mesa AS
 SELECT
@@ -57,7 +57,6 @@ FROM Mesas m
 LEFT JOIN Ventas v ON v.id_mesa = m.id_mesa
 GROUP BY m.id_mesa, m.numero_mesa;
 GO
-
 
 CREATE VIEW vista_ingredientes_con_receta AS
 SELECT

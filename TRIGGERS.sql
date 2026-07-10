@@ -112,7 +112,7 @@ ON Productos
 AFTER UPDATE
 AS
 BEGIN
-  
+    
     UPDATE Productos
     SET fecha_ultima_modificacion = GETDATE()
     WHERE id_producto IN (SELECT id_producto FROM inserted);
@@ -124,7 +124,7 @@ ON Ingredientes
 AFTER UPDATE
 AS
 BEGIN
-   
+    
     UPDATE Ingredientes
     SET fecha_ultima_modificacion = GETDATE()
     WHERE id_ingrediente IN (SELECT id_ingrediente FROM inserted);

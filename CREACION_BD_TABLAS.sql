@@ -1,30 +1,31 @@
 CREATE DATABASE BBDD2_UTN;
 GO
 
-USE BBDD_UTN;
+USE BBDD2_UTN;
 GO
 
 CREATE TABLE Categorias_Productos
 (
     id_categoria INT PRIMARY KEY IDENTITY(1,1),
     nombre_categoria VARCHAR(60) NOT NULL,
-    descripcion VARCHAR(300)          -- sin coma al final
-);
+    descripcion VARCHAR(300)          
 
+);
+GO
 CREATE TABLE Unidades_Medida
 (
     id_unidad_medida INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(50) NOT NULL,
     abreviatura VARCHAR(10) NOT NULL
 );
-
+GO
 CREATE TABLE Metodos_Pago
 (
     id_metodo_pago INT PRIMARY KEY IDENTITY(1,1),
     nombre_metodo VARCHAR(50) NOT NULL,
     descripcion VARCHAR(200) NOT NULL
 );
-
+GO
 CREATE TABLE Turnos
 (
     id_turno INT PRIMARY KEY IDENTITY(1,1),
@@ -32,7 +33,7 @@ CREATE TABLE Turnos
     hora_inicio TIME NOT NULL,
     hora_fin TIME NOT NULL
 );
-
+GO
 CREATE TABLE Cargos
 (
     id_cargo INT PRIMARY KEY IDENTITY(1,1),
@@ -49,7 +50,7 @@ CREATE TABLE Proveedores
     mail VARCHAR(60) NOT NULL,
     direccion VARCHAR(60) NOT NULL
 );
-
+GO
 CREATE TABLE Clientes
 (
     id_cliente INT PRIMARY KEY IDENTITY(1,1),
@@ -62,7 +63,7 @@ CREATE TABLE Clientes
     fecha_registro DATE NOT NULL,
     estado BIT NOT NULL 
 );
-
+GO
 CREATE TABLE Mesas
 (
     id_mesa INT PRIMARY KEY IDENTITY(1,1),
@@ -70,7 +71,7 @@ CREATE TABLE Mesas
     capacidad TINYINT NOT NULL,
     estado BIT NOT NULL
 );
-
+GO
 CREATE TABLE Empleados
 (
     id_empleado INT PRIMARY KEY IDENTITY(1,1),
@@ -94,6 +95,7 @@ CREATE TABLE Empleados
         REFERENCES Turnos(id_turno)
 ); 
 
+GO
 CREATE TABLE Productos
 (
     id_producto INT PRIMARY KEY IDENTITY(1,1),
@@ -105,6 +107,7 @@ CREATE TABLE Productos
     stock_minimo INT NOT NULL,
     estado BIT NOT NULL,
     fecha_alta DATE NOT NULL,
+    fecha_ultima_modificacion DATE NOT NULL,
     id_categoria INT NOT NULL,
     id_unidad_medida INT NOT NULL,
     
@@ -124,6 +127,7 @@ CREATE TABLE Ingredientes
 	stock_disponible DECIMAL(6,3) NOT NULL,
 	costo_unitario DECIMAL(7,2) NOT NULL,
 	id_unidad_medida INT NOT NULL,
+    fecha_ultima_modificacion DATE NOT NULL,
 	
 		CONSTRAINT FK_Ingredientes_Unidades_Medida
 			FOREIGN KEY (id_unidad_medida)
@@ -154,6 +158,7 @@ CREATE TABLE Ventas
         FOREIGN KEY (id_mesa)
         REFERENCES Mesas(id_mesa)
 ); 
+GO
 
 CREATE TABLE Compras
 (
@@ -176,6 +181,7 @@ CREATE TABLE Compras
         FOREIGN KEY (id_metodo_pago)
         REFERENCES Metodos_Pago(id_metodo_pago)
 );
+GO
 
 CREATE TABLE Detalle_Ventas
 (
@@ -194,7 +200,7 @@ CREATE TABLE Detalle_Ventas
         FOREIGN KEY (id_producto)
         REFERENCES Productos(id_producto)
 ); 
-
+GO
 CREATE TABLE Detalle_Compras
 (
     id_detalle INT PRIMARY KEY IDENTITY(1,1),
@@ -212,7 +218,7 @@ CREATE TABLE Detalle_Compras
         FOREIGN KEY (id_producto)
         REFERENCES Productos(id_producto)
 );
-
+GO
 CREATE TABLE Ingredientes_Producto
 (
 	cantidad_utilizada DECIMAL(5,3) NOT NULL,
@@ -230,7 +236,7 @@ CREATE TABLE Ingredientes_Producto
 		FOREIGN KEY (id_ingrediente)
 		REFERENCES Ingredientes(id_ingrediente),
 );
-
+GO
 CREATE TABLE Metodo_Pago_Venta
 (
     id_venta INT NOT NULL,
@@ -246,7 +252,7 @@ CREATE TABLE Metodo_Pago_Venta
         
     CONSTRAINT FK_Metodo_Pago_Venta_AUXMet
         FOREIGN KEY (id_metodo_pago)
-        REFERENCES Metodos_Pago(id_metodo_pago)   -- Sin coma
+        REFERENCES Metodos_Pago(id_metodo_pago)  
 );
 
 CREATE TABLE Auditoria_Precios_Compra (

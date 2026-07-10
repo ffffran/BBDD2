@@ -316,7 +316,7 @@ BEGIN
 
         COMMIT TRANSACTION;
         PRINT 'Stock actualizado correctamente.';
-  
+      
     END TRY
     BEGIN CATCH
         ROLLBACK TRANSACTION;
@@ -366,4 +366,3 @@ BEGIN
     GROUP BY p.nombre_producto
     ORDER BY total_vendido DESC;
 END;
-GO
