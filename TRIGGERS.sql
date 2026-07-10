@@ -105,3 +105,28 @@ BEGIN
     END
 END;
 GO
+
+
+CREATE TRIGGER trg_actualizar_fecha_modificacion
+ON Productos
+AFTER UPDATE
+AS
+BEGIN
+  
+    UPDATE Productos
+    SET fecha_ultima_modificacion = GETDATE()
+    WHERE id_producto IN (SELECT id_producto FROM inserted);
+END;
+GO
+
+CREATE TRIGGER trg_actualizar_fecha_modificacion_ingredientes
+ON Ingredientes
+AFTER UPDATE
+AS
+BEGIN
+   
+    UPDATE Ingredientes
+    SET fecha_ultima_modificacion = GETDATE()
+    WHERE id_ingrediente IN (SELECT id_ingrediente FROM inserted);
+END;
+GO
