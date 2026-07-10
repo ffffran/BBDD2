@@ -66,3 +66,42 @@ BEGIN
     END
 END;
 GO
+
+
+CREATE TRIGGER trg_auditar_cambio_stock_ingrediente
+ON Ingredientes
+AFTER UPDATE
+AS
+BEGIN
+    
+    IF UPDATE(stock_disponible)
+    BEGIN
+        INSERT INTO Auditoria_Stock_Ingredientes (id_ingrediente, stock_anterior, stock_nuevo, fecha_cambio, usuario)
+        SELECT
+            i.id_ingrediente,
+            d.stock_disponible,
+            i.stock_disponible,
+            GETDATE(),
+            SYSTEM_USER
+        FROM inserted i
+        INNER JOIN deleted d ON d.id_ingrediente = i.id_ingrediente
+        WHERE i.stock_disponible <> d.stock_disponible;
+    END
+END;
+GO
+
+CREATE TRIGGER trg_controlar_precio_venta
+ON Productos
+AFTER INSERT, UPDATE
+AS
+BEGIN
+  
+    IF EXISTS (
+        SELECT 1 FROM inserted i
+        WHERE i.precio_venta < i.precio_compra
+    )
+    BEGIN
+        THROW 50001, 'El precio de venta no puede ser menor al precio de compra.', 1;
+    END
+END;
+GO
