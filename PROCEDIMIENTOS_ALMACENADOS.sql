@@ -316,7 +316,7 @@ BEGIN
 
         COMMIT TRANSACTION;
         PRINT 'Stock actualizado correctamente.';
-
+  
     END TRY
     BEGIN CATCH
         ROLLBACK TRANSACTION;

@@ -46,3 +46,27 @@ SELECT
 FROM Productos p
 INNER JOIN Categorias_Productos cp ON cp.id_categoria = p.id_categoria
 WHERE p.estado = 1;
+
+CREATE VIEW vista_ventas_por_mesa AS
+SELECT
+    m.id_mesa,
+    m.numero_mesa,
+    COUNT(v.id_venta) AS cantidad_ventas,
+    SUM(v.total) AS total_recaudado
+FROM Mesas m
+LEFT JOIN Ventas v ON v.id_mesa = m.id_mesa
+GROUP BY m.id_mesa, m.numero_mesa;
+GO
+
+
+CREATE VIEW vista_ingredientes_con_receta AS
+SELECT
+    p.id_producto,
+    p.nombre_producto,
+    i.id_ingrediente,
+    i.nombre AS nombre_ingrediente,
+    ip.cantidad_utilizada
+FROM Ingredientes_Producto ip
+INNER JOIN Productos p ON p.id_producto = ip.id_producto
+INNER JOIN Ingredientes i ON i.id_ingrediente = ip.id_ingrediente;
+GO
