@@ -55,16 +55,16 @@ VALUES
 ('Santiago','X.','40000111','+54 9 11 4444-5555','Calle SiCorte 1200',GETDATE(),999000.03,1,3,1);
 
 INSERT INTO Ingredientes
-(nombre,stock_disponible,costo_unitario,id_unidad_medida)
+(nombre,stock_disponible,costo_unitario,id_unidad_medida,fecha_ultima_modificacion)
 VALUES
-('Muzzarella',50,8500,2),
-('Salsa',20,3500,3);
+('Muzzarella',50,8500,2,GETDATE()),
+('Salsa',20,3500,3,GETDATE());
 
 INSERT INTO Productos
-(nombre_producto,descripcion,precio_compra,precio_venta,stock_actual,stock_minimo,estado,fecha_alta,id_categoria,id_unidad_medida)
+(nombre_producto,descripcion,precio_compra,precio_venta,stock_actual,stock_minimo,estado,fecha_alta,fecha_ultima_modificacion,id_categoria,id_unidad_medida)
 VALUES
-('Pizza Muzzarella','Pizza clásica',3500,9000,20,5,1,GETDATE(),1,1),
-('Coca Cola 500ml','Bebida',900,2200,50,10,1,GETDATE(),2,1);
+('Pizza Muzzarella','Pizza clásica',3500,9000,20,5,1,GETDATE(),GETDATE(),1,1),
+('Coca Cola 500ml','Bebida',900,2200,50,10,1,GETDATE(),GETDATE(),2,1);
 
 DECLARE @id_compra INT;
 INSERT INTO Compras
